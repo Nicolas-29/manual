@@ -6,64 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Completo de Treinamento</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configura o Tailwind para usar a estratégia de classe para o modo escuro
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     <!-- Alpine.js para interatividade (Estado, Modal, Lógica) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-
-        /* Animações simples para simular o Framer Motion */
-        .animate-enter {
-            animation: enter 0.6s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes enter {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .delay-100 {
-            animation-delay: 100ms;
-        }
-
-        .delay-200 {
-            animation-delay: 200ms;
-        }
-
-        .delay-300 {
-            animation-delay: 300ms;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body class="bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 pb-20"
+<body
+    class="bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-200 selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-500/30 dark:selection:text-indigo-100 pb-20"
     x-data="trainingApp()" x-init="initApp()">
 
     <!-- Top Navigation -->
-    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <header
+        class="sticky top-0 z-40 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <div class="bg-indigo-600 p-2 rounded-lg">
                     <i data-lucide="book-open" class="w-5 h-5 text-white"></i>
                 </div>
-                <span class="font-bold text-lg tracking-tight text-slate-800 hidden sm:block">
+                <span class="font-bold text-lg tracking-tight text-slate-800 dark:text-slate-200 hidden sm:block">
                     Treinamento
                 </span>
             </div>
 
-            <button @click="isSettingsOpen = true"
-                class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors text-sm">
-                <i data-lucide="settings" class="w-4 h-4"></i>
-                <span>Configurações</span>
-            </button>
+            <div class="flex items-center gap-2">
+                <button @click="toggleTheme()"
+                    class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors">
+                    <i data-lucide="sun" class="w-5 h-5" x-show="theme === 'light'" x-cloak></i>
+                    <i data-lucide="moon" class="w-5 h-5" x-show="theme === 'dark'" x-cloak></i>
+                    <span class="sr-only">Mudar tema</span>
+                </button>
+
+                <button @click="isSettingsOpen = true"
+                    class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium transition-colors text-sm">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Configurações</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -74,7 +61,7 @@
         <div x-show="isSettingsOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" @click="isSettingsOpen = false">
+            class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" @click="isSettingsOpen = false">
         </div>
 
         <!-- Panel -->
@@ -82,21 +69,21 @@
             x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transform transition ease-in-out duration-300" x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
-            class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 border-l border-slate-200 flex flex-col">
+            class="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl z-50 border-l border-slate-200 dark:border-slate-700 flex flex-col">
 
-            <div class="flex items-center justify-between p-6 border-b border-slate-100">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <div class="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <i data-lucide="settings" class="w-5 h-5 text-indigo-600"></i>
                     Configurações
                 </h2>
                 <button @click="isSettingsOpen = false"
-                    class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
+                    class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <div class="p-6 overflow-y-auto flex-1 space-y-6">
-                <p class="text-sm text-slate-500 mb-4">
+            <div class="p-6 overflow-y-auto flex-1 space-y-6 bg-white dark:bg-slate-800">
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
                     Altere os valores abaixo para personalizar as respostas rápidas do sistema.
                 </p>
 
@@ -104,19 +91,20 @@
                     <!-- Inputs gerados dinamicamente -->
                     <template x-for="field in configFields" :key="field.key">
                         <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-slate-700 flex items-center gap-2">
-                                <i :data-lucide="field.icon" class="w-4 h-4 text-slate-400"></i>
+                            <label
+                                class="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                <i :data-lucide="field.icon" class="w-4 h-4 text-slate-400 dark:text-slate-500"></i>
                                 <span x-text="field.label"></span>
                             </label>
                             <input type="text" x-model="config[field.key]"
-                                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none">
+                                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/50 focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none">
                         </div>
                     </template>
                 </div>
             </div>
 
-            <div class="p-6 border-t border-slate-100 bg-slate-50">
-                <button @click="isSettingsOpen = false"
+            <div class="p-6 border-t border-slate-100 dark:border-slate-700 bg-slate-800/50">
+                <button @click="saveConfig(); isSettingsOpen = false"
                     class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-sm">
                     Salvar e Fechar
                 </button>
@@ -129,49 +117,54 @@
         <!-- Hero Section -->
         <div class="text-center space-y-4 mb-16">
             <div
-                class="animate-enter inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-sm font-medium mb-4 border border-indigo-100">
+                class="animate-enter inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 text-sm font-medium mb-4 border border-indigo-100 dark:border-indigo-500/20">
                 <i data-lucide="graduation-cap" class="w-4 h-4"></i>
                 <span>Treinamento Oficial</span>
             </div>
-            <h1 class="animate-enter delay-100 text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+            <h1
+                class="animate-enter delay-100 text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Sistema Profissional de Treinamento
             </h1>
-            <p class="animate-enter delay-200 text-lg text-slate-600 max-w-2xl mx-auto">
+            <p class="animate-enter delay-200 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                 Manual Estratégico Completo para Atendimento Seguro e Conversão.
             </p>
         </div>
 
         <!-- Visão Geral -->
-        <section class="animate-enter delay-300 bg-white rounded-3xl shadow-sm border border-slate-200 p-8 sm:p-10">
+        <section
+            class="animate-enter delay-300 bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 sm:p-10">
             <div class="flex items-center gap-3 mb-6">
                 <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
                     <i data-lucide="brain" class="w-6 h-6"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-800">Entendendo o Processo Completo</h2>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Entendendo o Processo Completo</h2>
             </div>
 
-            <p class="text-slate-700 mb-6 text-lg">
+            <p class="text-slate-700 dark:text-slate-300 mb-6 text-lg">
                 O atendimento não é apenas envio de mensagens. Ele é um processo psicológico dividido em 4 fases:
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 <template x-for="(phase, index) in phases">
-                    <div class="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div
+                        class="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
                         <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0"
                             x-text="index + 1"></div>
                         <div>
-                            <strong class="block text-slate-800" x-text="phase.title"></strong>
-                            <span class="text-sm text-slate-600" x-text="phase.desc"></span>
+                            <strong class="block text-slate-800 dark:text-slate-200" x-text="phase.title"></strong>
+                            <span class="text-sm text-slate-600 dark:text-slate-400" x-text="phase.desc"></span>
                         </div>
                     </div>
                 </template>
             </div>
 
-            <div class="bg-red-50 border border-red-200 p-5 rounded-2xl flex gap-4 items-start">
+            <div
+                class="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-5 rounded-2xl flex gap-4 items-start">
                 <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500 shrink-0 mt-0.5"></i>
                 <div>
-                    <strong class="text-red-800 block mb-2">Se você inverter etapas, o resultado pode ser:</strong>
-                    <ul class="list-disc list-inside text-red-700 text-sm space-y-1">
+                    <strong class="text-red-800 dark:text-red-300 block mb-2">Se você inverter etapas, o resultado pode
+                        ser:</strong>
+                    <ul class="list-disc list-inside text-red-700 dark:text-red-400 text-sm space-y-1">
                         <li>Denúncia</li>
                         <li>Bloqueio temporário</li>
                         <li>Banimento do número</li>
@@ -184,7 +177,8 @@
         <!-- Etapas Detalhadas -->
         <div class="space-y-8">
             <template x-for="step in detailedSteps" :key="step.id">
-                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <section
+                    class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
                     <!-- Header da Etapa -->
                     <div :class="`p-6 sm:p-8 border-b ${getColor(step.color).border} ${getColor(step.color).bg}`">
                         <h2 :class="`text-2xl font-bold ${getColor(step.color).text} flex items-center gap-3`"
@@ -194,9 +188,10 @@
                     <div class="p-6 sm:p-8 space-y-6">
                         <!-- Contexto -->
                         <template x-if="step.context.length > 0">
-                            <div class="flex flex-col gap-2 text-slate-700">
+                            <div class="flex flex-col gap-2 text-slate-700 dark:text-slate-400">
                                 <template x-for="ctx in step.context">
-                                    <p><strong class="text-slate-900" x-text="ctx.label"></strong> <span
+                                    <p><strong class="text-slate-900 dark:text-slate-200"
+                                            x-text="ctx.label"></strong> <span
                                             x-text="ctx.text"></span></p>
                                 </template>
                             </div>
@@ -206,11 +201,11 @@
                         <div class="relative group">
                             <div class="absolute right-3 top-3">
                                 <button @click="copyToClipboard(step.template, step.command)"
-                                    class="p-2 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors flex items-center gap-2 text-sm font-medium"
+                                    class="p-2 rounded-lg bg-white dark:bg-slate-700 shadow-sm border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 transition-colors flex items-center gap-2 text-sm font-medium"
                                     title="Copiar texto">
                                     <template x-if="copiedCommand === step.command">
-                                        <span class="flex items-center gap-2 text-emerald-600"><i data-lucide="check"
-                                                class="w-4 h-4"></i> Copiado</span>
+                                        <span class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400"><i
+                                                data-lucide="check" class="w-4 h-4"></i> Copiado</span>
                                     </template>
                                     <template x-if="copiedCommand !== step.command">
                                         <span class="flex items-center gap-2"><i data-lucide="copy" class="w-4 h-4"></i>
@@ -218,16 +213,18 @@
                                     </template>
                                 </button>
                             </div>
-                            <div class="bg-slate-100 p-6 rounded-2xl whitespace-pre-line text-slate-800 font-medium leading-relaxed border border-slate-200 pt-14 sm:pt-6 sm:pr-32"
+                            <div class="bg-slate-100 dark:bg-slate-900 p-6 rounded-2xl whitespace-pre-line text-slate-800 dark:text-slate-300 font-medium leading-relaxed border border-slate-200 dark:border-slate-700 pt-14 sm:pt-6 sm:pr-32"
                                 x-text="formatText(step.template)"></div>
                         </div>
 
                         <!-- Psicologia -->
                         <template x-if="step.psychology">
-                            <div class="bg-blue-50 border border-blue-100 p-5 rounded-2xl flex gap-3 text-blue-800">
+                            <div
+                                class="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-5 rounded-2xl flex gap-3 text-blue-800 dark:text-blue-300">
                                 <i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5 text-blue-500"></i>
                                 <div>
-                                    <strong>Psicologia:</strong> <span x-text="step.psychology"></span>
+                                    <strong class="dark:text-blue-200">Psicologia:</strong> <span
+                                        x-text="step.psychology"></span>
                                 </div>
                             </div>
                         </template>
@@ -235,11 +232,12 @@
                         <!-- Nota Positiva -->
                         <template x-if="step.positiveNote">
                             <div
-                                class="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl flex gap-3 text-emerald-900">
+                                class="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 p-5 rounded-2xl flex gap-3 text-emerald-900 dark:text-emerald-300">
                                 <i data-lucide="check-circle-2" class="w-5 h-5 shrink-0 mt-0.5 text-emerald-600"></i>
                                 <div>
-                                    <strong class="block mb-2" x-text="step.positiveNote.title"></strong>
-                                    <ul class="list-disc list-inside space-y-1 text-sm">
+                                    <strong class="block mb-2 dark:text-emerald-200"
+                                        x-text="step.positiveNote.title"></strong>
+                                    <ul class="list-disc list-inside space-y-1 text-sm ">
                                         <template x-for="item in step.positiveNote.items">
                                             <li x-text="item"></li>
                                         </template>
@@ -250,10 +248,12 @@
 
                         <!-- Nota Negativa -->
                         <template x-if="step.negativeNote">
-                            <div class="bg-red-50 border border-red-100 p-5 rounded-2xl flex gap-3 text-red-900">
+                            <div
+                                class="bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 p-5 rounded-2xl flex gap-3 text-red-900 dark:text-red-300">
                                 <i data-lucide="x-circle" class="w-5 h-5 shrink-0 mt-0.5 text-red-600"></i>
                                 <div>
-                                    <strong class="block mb-2" x-text="step.negativeNote.title"></strong>
+                                    <strong class="block mb-2 dark:text-red-200"
+                                        x-text="step.negativeNote.title"></strong>
                                     <ul class="list-disc list-inside space-y-1 text-sm">
                                         <template x-for="item in step.negativeNote.items">
                                             <li x-text="item"></li>
@@ -268,20 +268,22 @@
         </div>
 
         <!-- Simulação Completa -->
-        <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 sm:p-10">
+        <section
+            class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 sm:p-10">
             <div class="flex items-center gap-3 mb-6">
                 <div class="bg-emerald-100 p-2 rounded-lg text-emerald-600">
                     <i data-lucide="message-circle" class="w-6 h-6"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-800">Simulação Completa (Fluxo Ideal)</h2>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Simulação Completa (Fluxo Ideal)</h2>
             </div>
 
-            <div class="space-y-4 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+            <div
+                class="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
                 <template x-for="(msg, index) in simulation" :key="index">
                     <div :class="`flex ${msg.sender === 'atendente' ? 'justify-end' : 'justify-start'}`">
                         <div
                             :class="`flex flex-col max-w-[80%] ${msg.sender === 'atendente' ? 'items-end' : 'items-start'}`">
-                            <span class="text-xs text-slate-400 mb-1 px-1 flex items-center gap-1">
+                            <span class="text-xs text-slate-400 dark:text-slate-500 mb-1 px-1 flex items-center gap-1">
                                 <template x-if="msg.sender === 'atendente'">
                                     <span class="flex items-center gap-1">Atendente <i data-lucide="bot"
                                             class="w-3 h-3"></i></span>
@@ -294,7 +296,7 @@
                             <div :class="`px-5 py-3 rounded-2xl text-sm whitespace-pre-line ${
                                 msg.sender === 'atendente'
                                     ? 'bg-emerald-600 text-white rounded-tr-sm shadow-sm'
-                                    : 'bg-white text-slate-700 border border-slate-200 rounded-tl-sm shadow-sm'
+                                    : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-tl-sm shadow-sm'
                             }`" x-text="formatText(msg.text)"></div>
                         </div>
                     </div>
@@ -303,18 +305,19 @@
         </section>
 
         <!-- Bloqueios -->
-        <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 sm:p-10">
+        <section
+            class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 sm:p-10">
             <div class="flex items-center gap-3 mb-6">
                 <div class="bg-red-100 p-2 rounded-lg text-red-600">
                     <i data-lucide="shield-alert" class="w-6 h-6"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-slate-800">O Que Mais Gera Bloqueio</h2>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">O Que Mais Gera Bloqueio</h2>
             </div>
 
             <ul class="space-y-3">
                 <template x-for="item in blockReasons">
                     <li
-                        class="flex items-center gap-3 text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        class="flex items-center gap-3 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                         <i data-lucide="x-circle" class="w-5 h-5 text-red-500 shrink-0"></i>
                         <span x-text="item"></span>
                     </li>
@@ -324,148 +327,7 @@
 
     </main>
 
-    <script>
-        function trainingApp() {
-            return {
-                isSettingsOpen: false,
-                copiedCommand: null,
-                config: {
-                    nomeAtendente: 'Consultor(a) de Crédito',
-                    nomeEmpresa: 'Sua Empresa Aqui',
-                    valorParcela: 'R$ 159,00',
-                    valorDisponivel: 'R$ 1.850,00',
-                    videoExtrato: 'assets/videos/Consultar Extrato.mp4'
-                },
-                configFields: [
-                    { key: 'nomeAtendente', label: 'Nome do Atendente', icon: 'user' },
-                    { key: 'nomeEmpresa', label: 'Nome da Empresa', icon: 'building' },
-                    { key: 'valorParcela', label: 'Valor da Parcela', icon: 'dollar-sign' },
-                    { key: 'valorDisponivel', label: 'Valor Disponível', icon: 'wallet' },
-                    { key: 'videoExtrato', label: 'Vídeo de Extrato', icon: 'video' }
-                ],
-                phases: [
-                    { title: "Confiança", desc: "O cliente precisa saber quem você é." },
-                    { title: "Permissão", desc: "Ele precisa autorizar você a explicar." },
-                    { title: "Clareza", desc: "Ele precisa entender a proposta." },
-                    { title: "Decisão Segura", desc: "Ele precisa sentir que não está sendo pressionado." }
-                ],
-                blockReasons: [
-                    "Disparo em massa com texto idêntico.",
-                    "Enviar link na primeira mensagem.",
-                    "Pedir documento antes de explicar.",
-                    "Pressionar cliente indeciso.",
-                    "Falar \"última chance\"."
-                ],
-                detailedSteps: [
-                    {
-                        id: "etapa-1", color: "emerald", title: "Etapa 1 – /apresentacao", command: "/apresentacao",
-                        context: [{ label: "Onde usar?", text: "Sempre na primeira mensagem." }, { label: "Objetivo:", text: "Criar identificação e pedir permissão." }],
-                        template: "Oi, tudo bem?\nAqui é {nomeAtendente}, consultor(a) da {nomeEmpresa}.\nEstou retornando uma solicitação vinculada ao seu CPF.\nVocê consegue falar agora?",
-                        positiveNote: { title: "Por que fazer assim?", items: ["Reduz alerta de golpe.", "Cria contexto.", "Pede permissão (isso diminui resistência)."] },
-                        negativeNote: { title: "O que NÃO fazer:", items: ["Não falar direto de valor.", "Não enviar link na primeira mensagem.", "Não pedir documentos aqui."] }
-                    },
-                    {
-                        id: "etapa-2", color: "amber", title: "Etapa 2 – /interesse", command: "/interesse",
-                        context: [{ label: "Quando usar?", text: "Após o cliente responder." }, { label: "Objetivo:", text: "Criar curiosidade controlada." }],
-                        template: "Verificamos uma possibilidade no seu contrato atual que pode gerar um valor disponível mantendo o mesmo desconto mensal.\nPosso te explicar como funciona?",
-                        psychology: "O cliente precisa dizer \"sim\" antes de ouvir a proposta. Pequenos \"sins\" geram comprometimento."
-                    },
-                    {
-                        id: "etapa-3", color: "blue", title: "Etapa 3 – /explicacao", command: "/explicacao",
-                        context: [],
-                        template: "Funciona como um acréscimo no contrato já existente.\nO valor da parcela permanece {valorParcela}.\nO que pode mudar é apenas o prazo final.\nHoje você possui {valorDisponivel} disponível.",
-                        positiveNote: { title: "Por que explicar assim?", items: ["Linguagem simples.", "Sem termos técnicos.", "Sem pressão."] }
-                    },
-                    {
-                        id: "etapa-4", color: "purple", title: "Etapa 4 – /golpe", command: "/golpe",
-                        context: [{ label: "Atenção:", text: "Use apenas se o cliente perguntar." }],
-                        template: "Entendo totalmente sua preocupação.\nVocê pode confirmar pelos canais oficiais antes de seguir.\nSomos empresa registrada com CNPJ.\nFico à disposição.",
-                        psychology: "Por que não mandar isso antes? Porque mencionar golpe antes ativa suspeita."
-                    },
-                    {
-                        id: "etapa-5",
-                        color: "red",
-                        title: "Etapa 5 – /documentos",
-                        command: "/documentos",
-                        context: [
-                            { label: "Atenção:", text: "Somente após o cliente dizer que quer seguir." }
-                        ],
-                        template: "Para darmos continuidade ao seu atendimento com mais agilidade e segurança, você poderia me enviar, por favor:\n\n✅ O extrato dos últimos 30 dias do Caixa Tem\n✅ A foto do seu RG (frente e verso)\n\nFique tranquila(o), é apenas para conferência e manter tudo certinho para você.\n\nQualquer dúvida, estou aqui para ajudar. 💬✨\n\nSe não souber como, posso te enviar um vídeo com o passo a passo.",
-                        positiveNote: {
-                            title: "Por que essa versão é melhor?",
-                            items: [
-                                "Mensagem mais humana e natural.",
-                                "Explica o motivo da solicitação.",
-                                "Reduz resistência do cliente.",
-                                "Evita excesso de documentos."
-                            ]
-                        },
-                        negativeNote: {
-                            title: "Erro grave:",
-                            items: [
-                                "Pedir documento antes do aceite gera denúncia.",
-                                "Listar muitos documentos aumenta desconfiança.",
-                                "Não explicar o motivo da solicitação."
-                            ]
-                        }
-                    }
-                ],
-                simulation: [
-                    { sender: "atendente", text: "Oi, tudo bem?\nAqui é {nomeAtendente}, consultor(a) da {nomeEmpresa}.\nEstou retornando uma solicitação vinculada ao seu CPF.\nVocê consegue falar agora?" },
-                    { sender: "cliente", text: "Sim." },
-                    { sender: "atendente", text: "Verificamos uma possibilidade no seu contrato atual que pode gerar um valor disponível mantendo o mesmo desconto mensal.\nPosso te explicar como funciona?" },
-                    { sender: "cliente", text: "Pode explicar." },
-                    { sender: "atendente", text: "Funciona como um acréscimo no contrato já existente.\nO valor da parcela permanece {valorParcela}.\nO que pode mudar é apenas o prazo final.\nHoje você possui {valorDisponivel} disponível." },
-                    { sender: "cliente", text: "Quero sim." },
-                    { sender: "atendente", text: "Para dar continuidade preciso:\n\n✔ RG (frente e verso)\n✔ CPF\n✔ Data de nascimento\n✔ Selfie segurando documento\n✔ Extrato (caso refinanciamento)" },
-                    { sender: "cliente", text: "Enviei." },
-                    { sender: "atendente", text: "Deu tudo certo, já apareceu como aprovada ❤️\nEm até 2 minutos o valor estará disponível na sua conta." },
-                    { sender: "atendente", text: "O valor está disponível para formalização.\nVou enviar o link oficial.\n\n✔ Assinar eletronicamente\n✔ Confirmar validação\n✔ Aguardar liberação" }
-                ],
-
-                initApp() {
-                    // Inicializa os ícones do Lucide
-                    this.$nextTick(() => {
-                        lucide.createIcons();
-                    });
-
-                    // Observa mudanças para re-renderizar ícones se necessário (ex: novos itens)
-                    // Para este caso estático, o nextTick inicial é suficiente, mas se houver updates dinâmicos:
-                    this.$watch('isSettingsOpen', () => {
-                        this.$nextTick(() => lucide.createIcons());
-                    });
-                },
-
-                formatText(text) {
-                    return text
-                        .replace(/{nomeAtendente}/g, this.config.nomeAtendente)
-                        .replace(/{nomeEmpresa}/g, this.config.nomeEmpresa)
-                        .replace(/{valorParcela}/g, this.config.valorParcela)
-                        .replace(/{valorDisponivel}/g, this.config.valorDisponivel)
-                        .replace(/{videoExtrato}/g, this.config.videoExtrato);
-                },
-
-                copyToClipboard(text, command) {
-                    const formatted = this.formatText(text);
-                    navigator.clipboard.writeText(formatted);
-                    this.copiedCommand = command;
-                    setTimeout(() => this.copiedCommand = null, 2000);
-                    this.$nextTick(() => lucide.createIcons()); // Atualiza ícone de check
-                },
-
-                getColor(color) {
-                    const map = {
-                        emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-                        amber: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-                        blue: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-                        purple: { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200" },
-                        red: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
-                    };
-                    return map[color] || map.blue;
-                }
-            }
-        }
-    </script>
+    <script src="assets/js/app.js"></script>
 
 </body>
 
